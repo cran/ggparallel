@@ -1,0 +1,12 @@
+deff008574a5f1d9c583a59af51ccfd1 *DESCRIPTION
+149c2dfa660a294c716be4ae51f33fab *NAMESPACE
+85da2c11cfe7b6e48ef9ad0129cb731e *R/genes.R
+9743d8affcf301c1e2bc1df6c47c1612 *R/help.R
+211cce4c86b837231f830dd7180ad1e4 *R/parallel.R
+571da858af0806ee7773b8a6dd5a4afb *data/datalist
+2b5b07a493293c52b1c8d22c9f5460a4 *data/genes.rda
+2dc3d58e7a5ec8a1401522bace861b4f *ggparallel.Rproj
+60246215bee1788971350dee24712c7c *ggparallel_0.1.tar.gz
+c539efabfd712329494e3965d05d60f5 *man/genes.Rd
+1769c7676845211502aba9eeb1673708 *man/ggparallel.Rd
+ecf960bb5497e9ef0dd179b882761cc8 *man/package-ggparallel.Rd
