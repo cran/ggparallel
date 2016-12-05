@@ -48,15 +48,17 @@
 #' @param text.offset (vector) of values for offset the labels
 #' @param asp aspect ratio of the plot - it will be set to a default of 1 in
 #'   the case of hammock plots.
+#' @param same.level are all variables using the same levels? If yes, simplify the labelling
 #' @param ... passed on directly to all of the ggplot2 commands
 #' @return returns a  ggplot2 object that can be plotted directly or used as base
 #'  layer for additional modifications.
 #' @export
 #' @import ggplot2 plyr reshape2
+#' @example inst/examples/ggparallel-ex.R
 ggparallel <- function(vars=list(), data, weight=NULL, method="angle",
                        alpha=0.5, width = 0.25, order = 1,  ratio=NULL,
                        asp = NULL, label = TRUE, label.size=4, text.angle=90,
-                       text.offset=NULL, ...) {
+                       text.offset=NULL, same.level=FALSE, ...) {
   ### error checking
   vars <- unlist(vars)
   k = length(vars)
@@ -84,7 +86,7 @@ ggparallel <- function(vars=list(), data, weight=NULL, method="angle",
 
   llist <- NULL
   for (i in unique(vars)) {
-  	levels(data[,i]) <- paste(i, levels(data[,i]), sep=":")
+  	if (!same.level) levels(data[,i]) <- paste(i, levels(data[,i]), sep=":")
     llist <- c(llist, levels(data[,i]))
   }
   if ((method=="hammock"))# | (method=="adj.angle"))
@@ -122,16 +124,18 @@ ggparallel <- function(vars=list(), data, weight=NULL, method="angle",
     names(dfxy)[1:2] <- c(xname, yname)
 
     ## get the ordering for data according to x-axis categories
-    idx <- order(dfxy[,x], dfxy[,y], decreasing = FALSE)
+    idx <- order(dfxy[,x], dfxy[,y], decreasing = TRUE)
 
     ## find the position of X-axis connector
-    dfxy$X[idx] <- cumsum(dfxy$Freq[idx])
+    dfxy$X[idx] <- sum(dfxy$Freq[idx]) - cumsum(dfxy$Freq[idx])
+    dfxy$X[idx] <- dfxy$X[idx] + dfxy$Freq[idx]
 
     ## get the ordering for data according to y-axis categories
-    idx <- order(dfxy[,y], dfxy[,x], decreasing = FALSE)
+    idx <- order(dfxy[,y], dfxy[,x], decreasing = TRUE)
 
     ## find the position of the Y-axis connector
-    dfxy$Y[idx] <- cumsum(dfxy$Freq[idx])
+    dfxy$Y[idx] <- sum(dfxy$Freq[idx]) - cumsum(dfxy$Freq[idx])
+    dfxy$Y[idx] <- dfxy$Y[idx] + dfxy$Freq[idx]
 
     ## assign row number as id
     dfxy$id <- 1:nrow(dfxy)
@@ -149,7 +153,7 @@ ggparallel <- function(vars=list(), data, weight=NULL, method="angle",
 
     if (method=="parset") {
       r <- geom_ribbon(aes(x=as.numeric(variable)+xoffset+xid,
-                           ymin=value -Freq,
+                           ymin=value-Freq,
                            ymax= value, group=id,
                       fill=Nodeset, colour=Nodeset),	alpha=alpha, data=dfm)
     }
@@ -234,7 +238,6 @@ ggparallel <- function(vars=list(), data, weight=NULL, method="angle",
     }
     r
   }
-
   ## end helper function
 
   ## local variables
@@ -284,6 +287,7 @@ ggparallel <- function(vars=list(), data, weight=NULL, method="angle",
   }
   theme.layer <- NULL
   if (!is.null(asp)) theme.layer <- theme(aspect.ratio=asp)
+  dfm$Nodeset <- factor(dfm$Nodeset, levels = rev(levels(dfm$Nodeset)))
   ggplot() + xlab("")  + gr + theme.layer +
     geom_bar(aes(weight=weight, x=variable, fill=Nodeset, colour=Nodeset),  width=width, data=dfm) +
             llabels +
