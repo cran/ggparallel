@@ -4,7 +4,9 @@
 \name{genes}
 \alias{genes}
 \title{Data linking genes and pathways.}
-\format{An object of class \code{data.frame} with 2768 rows and 14 columns.}
+\format{
+An object of class \code{data.frame} with 2768 rows and 14 columns.
+}
 \usage{
 genes
 }
@@ -59,4 +61,3 @@ Kanehisa, M. and Goto, S.; KEGG: Kyoto Encyclopedia of Genes and Genomes.
 Nucleic Acids Res. 28, 27-30 (2000).
 }
 \keyword{datasets}
-
