@@ -1,3 +1,7 @@
+# ggparallel 0.4.0
+
+- Fix to test data.
+
 # ggparallel 0.3.0
 
 - Required change to package documentation.
